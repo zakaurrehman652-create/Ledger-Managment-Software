@@ -1,0 +1,3295 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <script>
+        if (!sessionStorage.getItem("ledger_access_token")) {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <title>Executive Dashboard &mdash; Ledger Management System</title>
+
+    <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="dashboard.css?v=7.0">
+
+</head>
+
+<body>
+
+
+
+    <!-- Executive App Top Header -->
+
+    <header class="app-header">
+
+        <div class="header-container">
+
+            <div class="brand-section" id="brandHomeBtn">
+
+                <img src="images/logo.jpg" alt="Tri Agro Farms Logo" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #059669; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12);">
+
+                <div class="brand-text">
+
+                    <h1 id="headerCompanyName">Tri Agro Farms <span class="currency-badge">PKR</span></h1>
+
+                    <p id="headerCompanyAddress"></p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="header-actions">
+
+                <div class="status-indicator" id="systemStatusPill" title="Connection status">
+
+                    <span class="status-dot"></span>
+
+                    <span id="systemStatusText">FastAPI &bull; SQLite Active</span>
+
+                </div>
+
+
+
+                                <button type="button" class="btn-new-voucher" id="btnTopPartyStatement" style="background: linear-gradient(135deg, #7C3AED, #4F46E5); border-color: #6D28D9; color: #fff; box-shadow: 0 2px 8px rgba(109,40,217,0.4);" title="View Party Ledger Statements &amp; Transaction History">
+
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+
+                    <span>Statements &amp; History</span>
+
+                </button>
+
+
+
+                <button type="button" class="btn-new-voucher" id="btnTopAnnualReport" style="background: var(--navy-800); border-color: var(--navy-700); color: #fff;" title="View Whole Year Annual Financial Report">
+
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+
+                    <span>Annual Report</span>
+
+                </button>
+
+
+
+                <button type="button" class="btn-new-voucher" id="btnTopMonthlyReport" style="background: #059669; border-color: #059669; color: #fff;" title="View Monthly Report (1 to 30 Days)">
+
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+
+                    <span>Monthly (1 to 30)</span>
+
+                </button>
+
+
+
+                <button type="button" class="btn-new-voucher" id="btnQuickExpense" style="background: #DC2626; border-color: #DC2626; color: #fff;">
+
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+
+                    <span>Add Expense</span>
+
+                </button>
+
+
+
+                <button type="button" class="btn-new-voucher" id="btnQuickVoucher">
+
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+
+                    <span>New Voucher</span>
+
+                </button>
+
+
+
+                <!-- Profile / Company Settings Trigger -->
+
+                <button type="button" class="user-profile-btn" id="btnHeaderProfile" title="Click to Edit Profile & Company Info">
+
+                    <div class="avatar-circle" id="userAvatarText">MH</div>
+
+                    <div class="user-info-text">
+
+                        <div class="user-name" id="topUserName">Muhammad Haris</div>
+
+                        <div class="user-role" id="topUserRole">Lead Controller</div>
+
+                    </div>
+
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+
+                </button>
+
+
+
+                <button type="button" class="btn-logout" id="btnLogout">Sign Out</button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- Main App Layout with Sidebar -->
+
+    <div class="app-layout">
+
+        <!-- Sidebar Navigation -->
+
+        <aside class="app-sidebar">
+
+            <ul class="nav-menu">
+
+                <li>
+
+                    <a class="nav-link active" data-view="dashboardView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" id="navLinkDailyExpenses" data-view="dashboardView" style="cursor: pointer;">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+
+                        <span>Daily Expenses</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="incomeView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+
+                        <span>Income & Revenue</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="paymentsView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+
+                        <span>Payments & Receipts</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="vouchersView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+
+                        <span>Voucher Register</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="accountsView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+
+                        <span>Chart of Accounts</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="partiesView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+
+                        <span>Customers & Vendors</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="gatePassView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.5L19 7.5V19a2 2 0 0 1-2 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+
+                        <span>Gate Pass</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="reportsView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+
+                        <span>Financial Reports</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+                    <a class="nav-link" data-view="settingsView">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Settings</span>
+                    </a>
+                </li>
+
+                <li>
+
+                    <a class="nav-link" data-view="syncView">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+
+                        <span>Sync & Backup</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+
+            <div class="sidebar-footer">
+
+                <p>&copy; 2026 Ledger Systems</p>
+
+                <p style="margin-top: 4px; color: var(--gold-600); font-weight: 600;">Double-Entry Standard</p>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- Main Dynamic Content Views Area -->
+
+        <main class="main-content">
+
+
+
+            <!-- VIEW 1: DASHBOARD OVERVIEW -->
+
+            <section id="dashboardView" class="view-section active">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Financial Executive Dashboard</h2>
+
+                    </div>
+
+                    <div class="header-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnRefreshDashboard">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+
+                            Refresh
+
+                        </button>
+
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnQuickAnnualReport" style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+
+                            Whole Year Report
+
+                        </button>
+
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnQuickMonthlyReport" style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+
+                            Monthly (1 to 30)
+
+                        </button>
+
+                        <button type="button" class="btn btn-sm" id="btnOpenIncomeModalTop" style="background: #059669; border-color: #059669; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+
+                            Add Income
+
+                        </button>
+
+                        <button type="button" class="btn btn-sm" id="btnOpenPaymentModalTop" style="background: #2563EB; border-color: #2563EB; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+
+                            Record Payment
+
+                        </button>
+
+                        <button type="button" class="btn btn-danger btn-sm" id="btnOpenExpenseModal" style="background: #DC2626; border-color: #DC2626; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+
+                            Add Expense
+
+                        </button>
+
+                        <button type="button" class="btn btn-primary btn-sm" id="btnOpenNewVoucherModal">
+
+                            Record Transaction
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                                <!-- Executive Financial Summary in PKR -->
+
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+
+                    <!-- CARD 1: Total Income -->
+
+                    <div class="kpi-card" style="border-left: 5px solid #059669;">
+
+                        <div class="kpi-header">
+
+                            <span class="kpi-title" style="font-weight: 700; font-size: 0.95rem; color: #059669;">Total Income</span>
+
+                            <div class="kpi-icon" style="background: #D1FAE5; color: #059669;">
+
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+
+                            </div>
+
+                        </div>
+
+                        <div class="kpi-value" id="kpiTotalIncome" style="color: #059669; font-size: 1.85rem; font-weight: 800;">PKR 0.00</div>
+
+                        <div class="kpi-subtitle">Total Amount Received &amp; Revenue</div>
+
+                    </div>
+
+
+
+                    <!-- CARD 2: Expenses -->
+
+                    <div class="kpi-card" style="border-left: 5px solid #DC2626;">
+
+                        <div class="kpi-header">
+
+                            <span class="kpi-title" style="font-weight: 700; font-size: 0.95rem; color: #DC2626;">Expenses</span>
+
+                            <div class="kpi-icon" style="background: #FEE2E2; color: #DC2626;">
+
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+
+                            </div>
+
+                        </div>
+
+                        <div class="kpi-value" id="kpiTotalExpenses" style="color: #DC2626; font-size: 1.85rem; font-weight: 800;">PKR 0.00</div>
+
+                        <div class="kpi-subtitle" id="kpiTodayExpenseSubtitle">Total Paid Expenses &amp; Outflows</div>
+
+                    </div>
+
+
+
+                    <!-- CARD 3: Remaining Amt After All Expenses -->
+
+                    <div class="kpi-card" id="cardRemainingAmt" style="border-left: 5px solid var(--navy-800);">
+
+                        <div class="kpi-header">
+
+                            <span class="kpi-title" style="font-weight: 700; font-size: 0.95rem; color: var(--navy-900);">Remaining Amt After All Expenses</span>
+
+                            <div class="kpi-icon" style="background: #EEF2FF; color: var(--navy-800);">
+
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+
+                            </div>
+
+                        </div>
+
+                        <div class="kpi-value" id="kpiRemainingAmt" style="font-size: 1.85rem; font-weight: 800;">PKR 0.00</div>
+
+                        <div class="kpi-subtitle">Total Income minus All Expenses</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Analytics Row: Cash Flow Chart + Revenue & Net Profit Breakdown -->
+
+                <div class="analytics-row">
+
+                    <div class="card">
+
+                        <div class="card-header-row">
+
+                            <div class="card-title">Cash Flow Distribution (Inflow vs Outflow)</div>
+
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Pie Chart Analysis (PKR)</span>
+
+                        </div>
+
+                        <div class="cash-flow-chart-container">
+
+                            <div class="chart-bars-wrap" id="cashFlowChartWrap">
+
+                                <!-- Bars populated dynamically via JS -->
+
+                            </div>
+
+                            <div class="chart-legend">
+
+                                <div class="legend-item"><span class="legend-box legend-inflow"></span> Monthly Inflow</div>
+
+                                <div class="legend-item"><span class="legend-box legend-outflow"></span> Monthly Outflow</div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="card">
+
+                        <div class="card-header-row">
+
+                            <div class="card-title">Operating Margins</div>
+
+                            <span class="badge badge-cr">Live P&L</span>
+
+                        </div>
+
+                        <div class="stats-breakdown-list">
+
+                            <div class="breakdown-item">
+
+                                <span class="breakdown-label">Gross Revenue</span>
+
+                                <span class="breakdown-val revenue" id="statGrossRevenue">PKR 0.00</span>
+
+                            </div>
+
+                            <div class="breakdown-item">
+
+                                <span class="breakdown-label">Total Expenses & COGS</span>
+
+                                <span class="breakdown-val expense" id="statTotalExpense">PKR 0.00</span>
+
+                            </div>
+
+                            <div class="breakdown-item">
+
+                                <span class="breakdown-label">Net Operating Profit</span>
+
+                                <span class="breakdown-val profit" id="statNetProfit">PKR 0.00</span>
+
+                            </div>
+
+                            <div class="breakdown-item">
+
+                                <span class="breakdown-label">Net Profit Margin</span>
+
+                                <span class="breakdown-val" id="statNetMargin">0%</span>
+
+                            </div>
+
+                            <div class="breakdown-item" style="border-top: 1px dashed var(--border-subtle); padding-top: 0.5rem; margin-top: 0.35rem;">
+
+                                <span class="breakdown-label" style="font-weight: 700; color: var(--navy-900);">Amount Received &minus; Total Expense</span>
+
+                                <span class="breakdown-val" id="statNetReceivedMinusExpense" style="font-weight: 800; font-size: 1.05rem;">PKR 0.00</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Daily & Date-wise Expenditure Tracker -->
+
+                <div class="card" id="dailyExpensesSection" style="margin-bottom: 1.5rem;">
+
+                    <div class="card-header-row" style="flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+
+                        <div>
+
+                            <div class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+
+                                <span>Daily & Date-wise Expenditures</span>
+
+                            </div>
+
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+
+                                Record and monitor business expenditures daily and filter by any date
+
+                            </div>
+
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+
+                            <input type="date" id="expenseFilterDate" class="form-input" style="width: auto; padding: 0.35rem 0.6rem; font-size: 0.82rem; height: 34px;" title="Pick date to filter expenses">
+
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnExpenseFilterToday">Today</button>
+
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnExpenseFilterAll">All Dates</button>
+
+                            <button type="button" class="btn btn-danger btn-sm" id="btnOpenExpenseModalFromSection" style="background: #DC2626; border-color: #DC2626; color: #fff; display: inline-flex; align-items: center; gap: 4px;">
+
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+
+                                Record Expense
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Expense Summary Badges Strip -->
+
+                    <div style="display: flex; gap: 1rem; padding: 0.75rem 1rem; background: #F8FAFC; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; border: 1px solid var(--border-subtle); flex-wrap: wrap; justify-content: space-between; align-items: center;">
+
+                        <div>
+
+                            <span style="color: var(--text-secondary);">Today's Expenditure: </span>
+
+                            <strong id="stripTodayExpense" style="color: #DC2626; font-size: 0.95rem;">PKR 0.00</strong>
+
+                        </div>
+
+                        <div>
+
+                            <span style="color: var(--text-secondary);">Selected Date / Filter Total: </span>
+
+                            <strong id="stripFilteredExpense" style="color: #2563EB; font-size: 0.95rem;">PKR 0.00</strong>
+
+                        </div>
+
+                        <div>
+
+                            <span style="color: var(--text-secondary);">All-Time Total Expense: </span>
+
+                            <strong id="stripAllTimeExpense" style="color: #1E293B; font-size: 0.95rem;">PKR 0.00</strong>
+
+                        </div>
+
+                        <div>
+
+                            <span style="color: var(--text-secondary);">Net (Received &minus; Expense): </span>
+
+                            <strong id="stripNetReceivedMinusExpense" style="font-size: 0.95rem;">PKR 0.00</strong>
+
+                        </div>
+
+                        <div>
+
+                            <span style="color: var(--text-secondary);">Net (Received &minus; Expense): </span>
+
+                            <strong id="stripNetReceivedMinusExpense" style="font-size: 0.95rem;">PKR 0.00</strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Date</th>
+
+                                    <th>Voucher #</th>
+
+                                    <th>Expense Category</th>
+
+                                    <th>Paid Via</th>
+
+                                    <th>Narration / Purpose</th>
+
+                                    <th style="text-align: right;">Amount (PKR)</th>
+
+                                    <th style="text-align: center;">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="expenseTableBody">
+
+                                <tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading expenditures...</td></tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Recent Transactions Card -->
+
+                <div class="card">
+
+                    <div class="card-header-row">
+
+                        <div class="card-title">Recent Journal & Voucher Transactions</div>
+
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnViewAllVouchers">View All Vouchers</button>
+
+                    </div>
+
+                    <div class="table-responsive">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Voucher #</th>
+
+                                    <th>Date</th>
+
+                                    <th>Type</th>
+
+                                    <th>Reference</th>
+
+                                    <th>General Narration</th>
+
+                                    <th style="text-align: right;">Amount (PKR)</th>
+
+                                    <th style="text-align: center;">Action</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="recentVouchersTableBody">
+
+                                <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading ledger records...</td></tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- VIEW 2: VOUCHER REGISTER -->
+
+            <section id="vouchersView" class="view-section">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Voucher & Journal Entries Register</h2>
+
+                        <p>Complete Double-Entry Log (Payment, Receipt, Journal, Sales & Purchases)</p>
+
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="btnCreateVoucherTop">Create Voucher</button>
+
+                </div>
+
+
+
+                <div class="card">
+
+                    <div class="filter-bar">
+
+                        <div class="filter-tabs" id="voucherFilterTabs">
+
+                            <button type="button" class="filter-tab active" data-vtype="">All</button>
+
+                            <button type="button" class="filter-tab" data-vtype="Receipt">Receipts</button>
+
+                            <button type="button" class="filter-tab" data-vtype="Payment">Payments</button>
+
+                            <button type="button" class="filter-tab" data-vtype="Journal">Journal (JV)</button>
+
+                            <button type="button" class="filter-tab" data-vtype="Sales">Sales</button>
+
+                            <button type="button" class="filter-tab" data-vtype="Purchase">Purchase</button>
+
+                        </div>
+
+                        <div class="search-input-wrap">
+
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+
+                            <input type="text" id="voucherSearchInput" class="search-input" placeholder="Search by Voucher # or Reference...">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Voucher #</th>
+
+                                    <th>Date</th>
+
+                                    <th>Type</th>
+
+                                    <th>Reference</th>
+
+                                    <th>Narration</th>
+
+                                    <th>Created By</th>
+
+                                    <th style="text-align: right;">Total Amount</th>
+
+                                    <th style="text-align: center;">Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="vouchersListBody">
+
+                                <!-- Populated dynamically -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- VIEW 3: CHART OF ACCOUNTS -->
+
+            <section id="accountsView" class="view-section">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Chart of Accounts (COA)</h2>
+
+                        <p>Hierarchical General Ledger Accounts (Assets, Liabilities, Equity, Revenue, Expenses)</p>
+
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="btnAddNewAccount">+ Add Account</button>
+
+                </div>
+
+
+
+                <div class="card">
+
+                    <div class="filter-bar">
+
+                        <div class="filter-tabs" id="accountTypeTabs">
+
+                            <button type="button" class="filter-tab active" data-atype="">All Accounts</button>
+
+                            <button type="button" class="filter-tab" data-atype="Asset">Assets</button>
+
+                            <button type="button" class="filter-tab" data-atype="Liability">Liabilities</button>
+
+                            <button type="button" class="filter-tab" data-atype="Equity">Equity</button>
+
+                            <button type="button" class="filter-tab" data-atype="Revenue">Revenue</button>
+
+                            <button type="button" class="filter-tab" data-atype="Expense">Expenses</button>
+
+                        </div>
+
+                        <div class="search-input-wrap">
+
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+
+                            <input type="text" id="accountSearchInput" class="search-input" placeholder="Search code or account title...">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Code</th>
+
+                                    <th>Account Name</th>
+
+                                    <th>Type</th>
+
+                                    <th>Description</th>
+
+                                    <th style="text-align: right;">Current Balance (PKR)</th>
+
+                                    <th style="text-align: center;">Status</th>
+
+                                    <th style="text-align: center;">Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="accountsTableBody">
+
+                                <!-- Populated dynamically -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- VIEW 4: COMMERCIAL PARTIES (CUSTOMERS & VENDORS) -->
+
+            <section id="partiesView" class="view-section">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Customers & Vendors Directory</h2>
+
+                        <p>Commercial Parties, Receivables, Payables, and Contact Information</p>
+
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="btnAddNewParty">+ Add Commercial Party</button>
+
+                </div>
+
+
+
+                <div class="kpi-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.25rem;">
+
+                    <div class="kpi-card receivables" style="padding: 1rem 1.25rem;">
+
+                        <span class="kpi-title">Customers Outstanding (Receivables)</span>
+
+                        <div class="kpi-value" id="partyTotalReceivable" style="font-size: 1.35rem; margin-top: 0.25rem;">PKR 0.00</div>
+
+                    </div>
+
+                    <div class="kpi-card payables" style="padding: 1rem 1.25rem;">
+
+                        <span class="kpi-title">Vendors Outstanding (Payables)</span>
+
+                        <div class="kpi-value" id="partyTotalPayable" style="font-size: 1.35rem; margin-top: 0.25rem;">PKR 0.00</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card">
+
+                    <div class="filter-bar">
+
+                        <div class="filter-tabs" id="partyFilterTabs">
+
+                            <button type="button" class="filter-tab active" data-ptype="">All Parties</button>
+
+                            <button type="button" class="filter-tab" data-ptype="Customer">Customers</button>
+
+                            <button type="button" class="filter-tab" data-ptype="Vendor">Vendors</button>
+
+                        </div>
+
+                        <div class="search-input-wrap">
+
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+
+                            <input type="text" id="partySearchInput" class="search-input" placeholder="Search party name, city or phone...">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Party Name</th>
+
+                                    <th>Type</th>
+
+                                    <th>Contact Person</th>
+
+                                    <th>Phone / Mobile</th>
+
+                                    <th>City / Address</th>
+
+                                    <th style="text-align: right;">Credit Limit</th>
+
+                                    <th style="text-align: right;">Current Balance (PKR)</th>
+
+                                    <th style="text-align: center;">Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="partiesTableBody">
+
+                                <!-- Populated dynamically -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- VIEW 5: FINANCIAL REPORTS -->
+
+            <section id="reportsView" class="view-section">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Financial Accounting Reports</h2>
+
+                        <p>Official Double-Entry Statements, Trial Balance, P&L, and Ledger History</p>
+
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" onclick="window.print()">
+
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                        Print Current Report
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="card">
+
+                    <div class="filter-bar" style="margin-bottom: 1.25rem;">
+
+                        <div class="filter-tabs" id="reportSubTabs">
+
+                            <button type="button" class="filter-tab active" data-report="trialBalance">Trial Balance</button>
+
+                            <button type="button" class="filter-tab" data-report="profitLoss">Profit & Loss Statement</button>
+
+                            <button type="button" class="filter-tab" data-report="generalLedger">General Ledger Account</button>
+
+                            <button type="button" class="filter-tab" data-report="partyLedger">Party Statement</button>
+
+                            <button type="button" class="filter-tab" data-report="annualReport">Annual Report</button>
+
+                            <button type="button" class="filter-tab" data-report="monthlyReport">Monthly Report</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Report Sub-View: Trial Balance -->
+
+                    <div id="subViewTrialBalance" class="report-sub-view">
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+
+                            <h3 style="font-size: 1.1rem; color: var(--navy-900);">Trial Balance as of Today</h3>
+
+                            <div id="trialBalanceStatusBadge" class="diff-badge balanced">Checking balance...</div>
+
+                        </div>
+
+                        <div class="table-responsive">
+
+                            <table class="data-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Account Code</th>
+
+                                        <th>Account Name</th>
+
+                                        <th>Type</th>
+
+                                        <th style="text-align: right;">Debit (PKR)</th>
+
+                                        <th style="text-align: right;">Credit (PKR)</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="trialBalanceTableBody"></tbody>
+
+                                <tfoot id="trialBalanceTableFoot" style="font-weight: 800; background: var(--navy-50);"></tfoot>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Report Sub-View: Profit & Loss -->
+
+                    <div id="subViewProfitLoss" class="report-sub-view" style="display: none;">
+
+                        <div style="margin-bottom: 1.5rem; text-align: center; padding: 1rem; background: var(--navy-50); border-radius: 8px;">
+
+                            <h3 style="font-size: 1.2rem; color: var(--navy-950);">Income Statement (Profit & Loss)</h3>
+
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Calculated for Active Fiscal Period (PKR)</p>
+
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+                            <div>
+
+                                <h4 style="font-size: 0.95rem; font-weight: 700; color: #059669; margin-bottom: 0.5rem; border-bottom: 2px solid #059669; padding-bottom: 0.25rem;">Operating Revenues</h4>
+
+                                <table class="data-table" id="plRevenuesTable">
+
+                                    <tbody></tbody>
+
+                                </table>
+
+                            </div>
+
+                            <div>
+
+                                <h4 style="font-size: 0.95rem; font-weight: 700; color: #DC2626; margin-bottom: 0.5rem; border-bottom: 2px solid #DC2626; padding-bottom: 0.25rem;">Operating Expenses & COGS</h4>
+
+                                <table class="data-table" id="plExpensesTable">
+
+                                    <tbody></tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--navy-850); color: #FFFFFF; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+
+                            <div>
+
+                                <div style="font-size: 0.8rem; color: var(--gold-300); text-transform: uppercase;">Net Operating Profit / Loss</div>
+
+                                <div id="plNetProfitSummary" style="font-size: 1.4rem; font-weight: 800;">PKR 0.00</div>
+
+                            </div>
+
+                            <button type="button" class="btn btn-gold btn-sm" onclick="window.print()">Export Statement</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Report Sub-View: General Ledger -->
+
+                    <div id="subViewGeneralLedger" class="report-sub-view" style="display: none;">
+
+                        <div class="no-print" style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; flex-wrap: wrap;">
+
+                            <div style="flex: 1; min-width: 240px;">
+
+                                <label class="form-label">Select Account:</label>
+
+                                <select id="glAccountSelect" class="form-select"></select>
+
+                            </div>
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">From Date:</label>
+
+                                <input type="date" id="glStatementFromDate" class="form-input" style="width: 135px; padding: 0.35rem 0.5rem; height: 35px;">
+
+                            </div>
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">To Date:</label>
+
+                                <input type="date" id="glStatementToDate" class="form-input" style="width: 135px; padding: 0.35rem 0.5rem; height: 35px;">
+
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btnLoadGlStatement">Load Ledger</button>
+
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">
+
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                                Print Statement
+
+                            </button>
+
+                        </div>
+
+                        <div class="table-responsive">
+
+                            <table class="data-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Date</th>
+
+                                        <th>Voucher #</th>
+
+                                        <th>Narration</th>
+
+                                        <th style="text-align: right;">Debit (PKR)</th>
+
+                                        <th style="text-align: right;">Credit (PKR)</th>
+
+                                        <th style="text-align: right;">Running Balance (PKR)</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="glStatementTableBody">
+
+                                    <tr><td colspan="6" style="text-align: center; padding: 1.5rem;">Select an account to view ledger history.</td></tr>
+
+                                </tbody>
+
+                                <tfoot id="glStatementTableFoot" style="font-weight: 800; background: var(--navy-50);"></tfoot>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Report Sub-View: Party Statement -->
+
+                    <div id="subViewPartyLedger" class="report-sub-view" style="display: none;">
+
+                        <div class="no-print" style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; flex-wrap: wrap;">
+
+                            <div style="flex: 1; min-width: 240px;">
+
+                                <label class="form-label">Select Customer, Vendor or Supplier:</label>
+
+                                <select id="partyStatementSelect" class="form-select"></select>
+
+                            </div>
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">From Date:</label>
+
+                                <input type="date" id="partyStatementFromDate" class="form-input" style="width: 135px; padding: 0.35rem 0.5rem; height: 35px;">
+
+                            </div>
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">To Date:</label>
+
+                                <input type="date" id="partyStatementToDate" class="form-input" style="width: 135px; padding: 0.35rem 0.5rem; height: 35px;">
+
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btnLoadPartyStatement">Load Statement</button>
+
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">
+
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                                Print Statement
+
+                            </button>
+
+                        </div>
+
+                        <div id="partyStatementInfoCard" style="display: none; padding: 0.85rem 1rem; background: var(--navy-50); border-radius: 8px; margin-bottom: 1rem;">
+
+                            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+
+                                <div><strong id="psiName">-</strong> &bull; <span id="psiContact">-</span> &bull; <span id="psiPhone">-</span></div>
+
+                                <div>Current Balance: <strong id="psiBalance" style="color: var(--navy-900);">PKR 0.00</strong></div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="table-responsive">
+
+                            <table class="data-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Date</th>
+
+                                        <th>Voucher #</th>
+
+                                        <th>Type</th>
+
+                                        <th>Narration</th>
+
+                                        <th style="text-align: right;">Debit (PKR)</th>
+
+                                        <th style="text-align: right;">Credit (PKR)</th>
+
+                                        <th style="text-align: right;">Running Balance (PKR)</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="partyStatementTableBody">
+
+                                    <tr><td colspan="7" style="text-align: center; padding: 1.5rem;">Select a customer, vendor or supplier to inspect statement.</td></tr>
+
+                                </tbody>
+
+                                <tfoot id="partyStatementTableFoot" style="font-weight: 800; background: var(--navy-50);"></tfoot>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Report Sub-View: Annual Report -->
+
+                    <div id="subViewAnnualReport" class="report-sub-view" style="display: none;">
+
+                        <div style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; flex-wrap: wrap;">
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">Select Year:</label>
+
+                                <select id="annualYearSelect" class="form-select" style="width: 150px;"></select>
+
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btnLoadAnnualReport">Load Annual Report</button>
+
+                            <button type="button" class="btn btn-gold" id="btnAnnualWholeYear" style="font-weight: 700;">ðŸ“… Whole Year (Jan - Dec)</button>
+
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">
+
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                                Print Report
+
+                            </button>
+
+                        </div>
+
+                        <div id="annualKpiStrip" style="display: none; gap: 1rem; padding: 0.75rem 1rem; background: #F8FAFC; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; border: 1px solid var(--border-subtle); flex-wrap: wrap; justify-content: space-between; align-items: center;">
+
+                            <div><span style="color: var(--text-secondary);">Total Inflow: </span><strong id="annualTotalInflow" style="color: #059669; font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Total Outflow: </span><strong id="annualTotalOutflow" style="color: #DC2626; font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Net Cash Flow: </span><strong id="annualNetCash" style="color: var(--navy-900); font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Vouchers: </span><strong id="annualVoucherCount" style="color: var(--navy-900);">0</strong></div>
+
+                        </div>
+
+                        <div id="annualProfitBanner" style="display: none; margin-bottom: 1rem; padding: 1rem; background: var(--navy-850); color: #FFFFFF; border-radius: 8px; justify-content: space-between; align-items: center;">
+
+                            <div>
+
+                                <div style="font-size: 0.8rem; color: var(--gold-300); text-transform: uppercase;">Annual Net Profit / Loss</div>
+
+                                <div id="annualNetProfit" style="font-size: 1.4rem; font-weight: 800;">PKR 0.00</div>
+
+                            </div>
+
+                            <div style="text-align: right;">
+
+                                <div style="font-size: 0.75rem; color: #94A3B8;">Revenue: <span id="annualRevenue">PKR 0.00</span></div>
+
+                                <div style="font-size: 0.75rem; color: #94A3B8;">Expenses: <span id="annualExpense">PKR 0.00</span></div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="table-responsive">
+
+                            <table class="data-table">
+
+                                <thead><tr>
+
+                                    <th>Month</th>
+
+                                    <th style="text-align: right;">Inflow (PKR)</th>
+
+                                    <th style="text-align: right;">Outflow (PKR)</th>
+
+                                    <th style="text-align: right;">Journal (PKR)</th>
+
+                                    <th style="text-align: right;">Net (PKR)</th>
+
+                                    <th style="text-align: center;">Vouchers</th>
+
+                                </tr></thead>
+
+                                <tbody id="annualReportTableBody"><tr><td colspan="6" style="text-align: center; padding: 1.5rem;">Select a year and click Load Annual Report.</td></tr></tbody>
+
+                                <tfoot id="annualReportTableFoot" style="font-weight: 800; background: var(--navy-50);"></tfoot>
+
+                            </table>
+
+                        </div>
+
+                        <div id="annualTypeSummary" style="display: none; margin-top: 1.25rem;">
+
+                            <h4 style="font-size: 0.95rem; color: var(--navy-900); margin-bottom: 0.5rem;">Account Type Summary</h4>
+
+                            <div class="table-responsive"><table class="data-table">
+
+                                <thead><tr><th>Account Type</th><th style="text-align: center;">Accounts</th><th style="text-align: right;">Total Balance (PKR)</th></tr></thead>
+
+                                <tbody id="annualTypeSummaryBody"></tbody>
+
+                            </table></div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Report Sub-View: Monthly Report -->
+
+                    <div id="subViewMonthlyReport" class="report-sub-view" style="display: none;">
+
+                        <div style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; flex-wrap: wrap;">
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">Year:</label>
+
+                                <select id="monthlyYearSelect" class="form-select" style="width: 130px;"></select>
+
+                            </div>
+
+                            <div style="flex: 0 0 auto;">
+
+                                <label class="form-label">Month:</label>
+
+                                <select id="monthlyMonthSelect" class="form-select" style="width: 160px;">
+
+                                    <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+
+                                    <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+
+                                    <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+
+                                    <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+
+                                </select>
+
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btnLoadMonthlyReport">Load Monthly Report</button>
+
+                            <button type="button" class="btn btn-gold" id="btnMonthly1to30" style="font-weight: 700;">ðŸ“… 1 to 30 (Whole Month)</button>
+
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">
+
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                                Print Report
+
+                            </button>
+
+                        </div>
+
+                        <div id="monthlyPeriodBanner" style="display: none; margin-bottom: 1rem; text-align: center; padding: 0.75rem 1rem; background: var(--navy-50); border-radius: 8px;">
+
+                            <h3 id="monthlyPeriodTitle" style="font-size: 1.1rem; color: var(--navy-950);"></h3>
+
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Detailed Transaction Report (PKR)</p>
+
+                        </div>
+
+                        <div id="monthlyKpiStrip" style="display: none; gap: 1rem; padding: 0.75rem 1rem; background: #F8FAFC; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; border: 1px solid var(--border-subtle); flex-wrap: wrap; justify-content: space-between; align-items: center;">
+
+                            <div><span style="color: var(--text-secondary);">Total Inflow: </span><strong id="monthlyTotalInflow" style="color: #059669; font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Total Outflow: </span><strong id="monthlyTotalOutflow" style="color: #DC2626; font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Net: </span><strong id="monthlyNetCash" style="color: var(--navy-900); font-size: 0.95rem;">PKR 0.00</strong></div>
+
+                            <div><span style="color: var(--text-secondary);">Vouchers: </span><strong id="monthlyVoucherCount" style="color: var(--navy-900);">0</strong></div>
+
+                        </div>
+
+                        <div id="monthlyTypeBreakdown" style="display: none; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;"></div>
+
+                        <div class="table-responsive">
+
+                            <table class="data-table">
+
+                                <thead><tr>
+
+                                    <th>Date</th><th>Voucher #</th><th>Type</th><th>Reference</th><th>Narration</th><th style="text-align: right;">Amount (PKR)</th>
+
+                                </tr></thead>
+
+                                <tbody id="monthlyReportTableBody"><tr><td colspan="6" style="text-align: center; padding: 1.5rem;">Select year &amp; month, then click Load Monthly Report.</td></tr></tbody>
+
+                                <tfoot id="monthlyReportTableFoot" style="font-weight: 800; background: var(--navy-50);"></tfoot>
+
+                            </table>
+
+                        </div>
+
+                        <div id="monthlyDailySummaryWrap" style="display: none; margin-top: 1.25rem;">
+
+                            <h4 style="font-size: 0.95rem; color: var(--navy-900); margin-bottom: 0.5rem;">Daily Summary</h4>
+
+                            <div class="table-responsive"><table class="data-table">
+
+                                <thead><tr><th>Date</th><th style="text-align: right;">Inflow (PKR)</th><th style="text-align: right;">Outflow (PKR)</th><th style="text-align: right;">Journal (PKR)</th><th style="text-align: center;">Transactions</th></tr></thead>
+
+                                <tbody id="monthlyDailySummaryBody"></tbody>
+
+                            </table></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- VIEW 6: COMPANY & PROFILE SETTINGS (Edit Profile) -->
+
+            <section id="settingsView" class="view-section">
+                <div class="view-header">
+                    <div class="view-title">
+                        <h2>System & Business Settings Dashboard</h2>
+                        <p>Configure company profile, credentials, customer form custom fields, and accounting preferences</p>
+                    </div>
+                </div>
+
+                <!-- SETTINGS TAB NAVIGATION -->
+                <div class="filter-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" class="filter-tab active" id="tabBtnSettingsProfile" onclick="switchSettingsTab('profile')">
+                        ðŸ¢ Company Profile & Credentials
+                    </button>
+                    <button type="button" class="filter-tab" id="tabBtnSettingsCustomFields" onclick="switchSettingsTab('customFields')">
+                        ðŸ“‹ Customer Form Settings (Custom Fields)
+                    </button>
+                    <button type="button" class="filter-tab" id="tabBtnSettingsQuickLinks" onclick="switchSettingsTab('quickLinks')">
+                        âš™ï¸ Ledger Accounts & Parties Setup
+                    </button>
+                </div>
+
+                <!-- TAB 1: COMPANY PROFILE & CREDENTIALS -->
+                <div id="tabContentSettingsProfile" class="settings-tab-pane">
+                    <div class="card" style="max-width: 800px;">
+                        <div id="settingsAlertBanner" class="diff-badge" style="display: none; margin-bottom: 1rem; width: 100%; padding: 0.65rem 1rem;"></div>
+
+                        <form id="settingsProfileForm">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="setFullName" class="form-input" required placeholder="Muhammad Haris">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Company Email Address</label>
+                                    <input type="email" id="setEmail" class="form-input" required placeholder="admin123@gmail.com">
+                                </div>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Company / Business Name</label>
+                                    <input type="text" id="setCompanyName" class="form-input" placeholder="Tri Agro Farms">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Official Phone / Mobile</label>
+                                    <input type="text" id="setPhone" class="form-input" placeholder="+92 320 9448030">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Business Office Address</label>
+                                <textarea id="setAddress" class="form-textarea" rows="2" placeholder="Sheikhupura Farm Head Office, Punjab"></textarea>
+                            </div>
+
+                            <div class="form-grid-2" style="border-top: 1px dashed var(--border-subtle); padding-top: 1rem; margin-top: 0.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">New Password (Optional)</label>
+                                    <input type="password" id="setNewPassword" class="form-input" placeholder="Leave empty to keep unchanged (Min 6 chars)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" id="setConfirmPassword" class="form-input" placeholder="Re-type new password">
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+                                <button type="submit" class="btn btn-primary" id="btnSaveProfileSettings">
+                                    ðŸ’¾ Save Profile & Company Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- TAB 2: CUSTOMER FORM SETTINGS (CUSTOM FIELDS) -->
+                <div id="tabContentSettingsCustomFields" class="settings-tab-pane" style="display: none;">
+                    <div class="card" style="max-width: 850px; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <h3 style="margin: 0 0 4px 0; font-size: 1.15rem; color: #0F172A; font-weight: 800;">
+                                    Customer Form Custom Fields (Ú©Ø³Ù¹Ù…Ø± ÙØ§Ø±Ù… Ø³ÛŒÙ¹Ù†Ú¯Ø²)
+                                </h3>
+                                <p style="margin: 0; font-size: 0.85rem; color: #475569; max-width: 600px;">
+                                    Configure customized fields for your customer registration form (e.g. NTN Number, CNIC, Delivery Route, Vehicle No). These fields dynamically appear whenever you create or edit a customer.
+                                </p>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="showAddCustomFieldModal()" style="background: #059669; border-color: #059669; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                + Add Custom Field
+                            </button>
+                        </div>
+
+                        <div id="customFieldAlertBanner" class="diff-badge" style="display: none; margin-top: 1rem; width: 100%; padding: 0.65rem 1rem;"></div>
+
+                        <div class="table-responsive" style="margin-top: 1.25rem;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Field Label</th>
+                                        <th>Field Name (Key)</th>
+                                        <th>Input Type</th>
+                                        <th>Required</th>
+                                        <th>Options</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customFieldsTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 1.5rem; color: #64748B;">
+                                            Loading custom fields...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: ACCOUNTING & QUICK LINKS -->
+                <div id="tabContentSettingsQuickLinks" class="settings-tab-pane" style="display: none;">
+                    <div class="card" style="max-width: 800px; background: linear-gradient(to right, #F8FAFC, #F1F5F9); border: 1.5px solid #CBD5E1;">
+                        <h3 style="margin: 0 0 6px 0; font-size: 1.15rem; color: #0F172A; font-weight: 800;">
+                            Accounting Structure & Parties Setup
+                        </h3>
+                        <p style="margin: 0; font-size: 0.85rem; color: #475569; max-width: 600px;">
+                            Quickly access Chart of Accounts, Customers, Suppliers, and System Data management.
+                        </p>
+                        <div style="display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="switchView('accountsView')" style="background: #059669; border-color: #059669;">
+                                ðŸ“– Manage Chart of Accounts
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('partiesView')">
+                                ðŸ‘¥ Manage Customers & Vendors
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('syncView')">
+                                ðŸ’¾ Backup & Diagnostics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- VIEW 7: SYNC & BACKUP -->
+
+            <section id="syncView" class="view-section">
+
+                <div class="view-header">
+
+                    <div class="view-title">
+
+                        <h2>Data Engine & Offline Sync Manager</h2>
+
+                        <p>Database Connectivity, Offline Queuing, and JSON Backup Export</p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card" style="max-width: 800px;">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--navy-50); border-radius: 8px; margin-bottom: 1.25rem;">
+
+                        <div>
+
+                            <div style="font-weight: 700; color: var(--navy-950);">System Status: <span style="color: var(--success-green);">Healthy &bull; Online</span></div>
+
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;" id="engineInfoText">Engine: SQLite (ledger.db) &bull; Currency: PKR</div>
+
+                        </div>
+
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnPingHealth">Run Diagnostics</button>
+
+                    </div>
+
+
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+
+                        <button type="button" class="btn btn-primary" id="btnExportBackup">
+
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+
+                            Export Full Database JSON Backup
+
+                        </button>
+
+                        <button type="button" class="btn btn-secondary" id="btnForceSyncVouchers">
+
+                            Force Synchronize Offline Vouchers
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+
+            <!-- VIEW: INCOME & REVENUE MANAGEMENT -->
+            <section id="incomeView" class="view-section">
+                <div class="view-header">
+                    <div class="view-title">
+                        <h2>Income & Revenue Management</h2>
+                        <p>Track farm sales revenue, services income, direct inflows, and customer receipts</p>
+                    </div>
+                    <div class="header-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            Print Statement
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" id="btnOpenIncomeModal" style="background: #059669; border-color: #059669; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            + Record Income
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Income KPIs -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 1.25rem;">
+                    <div class="kpi-card" style="border-left: 5px solid #059669;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #059669;">Total Direct Income</span>
+                            <div class="kpi-icon" style="background: #D1FAE5; color: #059669;">ðŸ’°</div>
+                        </div>
+                        <div class="kpi-value" id="kpiIncomeTotalRevenue" style="color: #059669; font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Direct Sales & Revenue</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid #2563EB;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #2563EB;">Customer Receipts</span>
+                            <div class="kpi-icon" style="background: #EFF6FF; color: #2563EB;">ðŸ“¥</div>
+                        </div>
+                        <div class="kpi-value" id="kpiIncomeTotalReceipts" style="color: #2563EB; font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Collected Receivables (Non-duplicative)</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid #D97706;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #D97706;">Today's Inflow</span>
+                            <div class="kpi-icon" style="background: #FFFBEB; color: #D97706;">ðŸ“…</div>
+                        </div>
+                        <div class="kpi-value" id="kpiIncomeToday" style="color: #D97706; font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Recorded Today</div>
+                    </div>
+                </div>
+
+                <!-- Income Table Card -->
+                <div class="card">
+                    <div class="filter-bar" style="flex-wrap: wrap; gap: 0.75rem;">
+                        <div class="filter-tabs" id="incomeTypeTabs">
+                            <button type="button" class="filter-tab active" data-itype="all">All Inflows</button>
+                            <button type="button" class="filter-tab" data-itype="revenue">Direct Revenue</button>
+                            <button type="button" class="filter-tab" data-itype="receipt">Customer Receipts</button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                            <input type="date" id="incomeFilterDate" class="form-input" style="width: auto; height: 34px; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnIncomeFilterToday">Today</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnIncomeFilterAll">All</button>
+                        </div>
+                        <div class="search-input-wrap">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="incomeSearchInput" class="search-input" placeholder="Search Trx #, Category, Customer, Description...">
+                        </div>
+                    </div>
+
+                    <div class="table-info-strip" style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 1rem; background: #F8FAFC; border-bottom: 1.5px solid var(--border-color); font-size: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--text-secondary);">Showing: </span>
+                            <strong id="stripIncomeCount" style="color: var(--text-primary); font-weight: 700;">0 entries</strong>
+                            <span style="color: #CBD5E1;">|</span>
+                            <span style="color: var(--text-secondary);">Selected Filter Total: </span>
+                            <strong id="stripFilteredIncome" style="color: #059669; font-size: 0.95rem; font-weight: 800;">PKR 0.00</strong>
+                        </div>
+                        <div style="display: flex; gap: 14px; font-size: 0.82rem;">
+                            <span>Direct Revenue: <strong id="stripDirectRevenue" style="color: #059669; font-weight: 700;">PKR 0.00</strong></span>
+                            <span>Customer Receipts: <strong id="stripCustomerReceipts" style="color: #2563EB; font-weight: 700;">PKR 0.00</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Trx #</th>
+                                    <th>Category</th>
+                                    <th>Customer / Party</th>
+                                    <th>Payment Method</th>
+                                    <th>Reference #</th>
+                                    <th>Description / Purpose</th>
+                                    <th style="text-align: right;">Amount (PKR)</th>
+                                    <th style="text-align: center;">Type</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody">
+                                <tr><td colspan="10" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading income entries...</td></tr>
+                            </tbody>
+                            <tfoot id="incomeTableFoot" style="background: #F8FAFC; font-weight: 700; border-top: 2px solid #E2E8F0;">
+                                <tr>
+                                    <td colspan="7" style="text-align: right; padding: 0.75rem 1rem; color: var(--text-secondary);">Total (PKR):</td>
+                                    <td id="incomeFootTotal" style="text-align: right; padding: 0.75rem 1rem; color: #059669; font-size: 1rem; font-weight: 800;">PKR 0.00</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: PAYMENTS & RECEIPTS MANAGEMENT -->
+            <section id="paymentsView" class="view-section">
+                <div class="view-header">
+                    <div class="view-title">
+                        <h2>Payments & Receipts Allocation</h2>
+                        <p>Customer receipts and supplier payments with dynamic balance maintenance</p>
+                    </div>
+                    <div class="header-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            Print Register
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btnOpenPaymentModal" style="background: #2563EB; border-color: #2563EB; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            + Record Payment / Receipt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment KPIs -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 1.25rem;">
+                    <div class="kpi-card" style="border-left: 5px solid #059669;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #059669;">Total Customer Receipts</span>
+                            <div class="kpi-icon" style="background: #D1FAE5; color: #059669;">ðŸ“¥</div>
+                        </div>
+                        <div class="kpi-value" id="kpiPaymentTotalReceipts" style="color: #059669; font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Collected from Debtors</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid #DC2626;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #DC2626;">Total Supplier Payments</span>
+                            <div class="kpi-icon" style="background: #FEE2E2; color: #DC2626;">ðŸ“¤</div>
+                        </div>
+                        <div class="kpi-value" id="kpiPaymentTotalSupplier" style="color: #DC2626; font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Paid to Creditors / Suppliers</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid var(--navy-800);">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: var(--navy-900);">Net Cash Movement</span>
+                            <div class="kpi-icon" style="background: #EEF2FF; color: var(--navy-800);">âš–ï¸</div>
+                        </div>
+                        <div class="kpi-value" id="kpiPaymentNetMovement" style="font-size: 1.6rem; font-weight: 800;">PKR 0.00</div>
+                        <div class="kpi-subtitle">Receipts minus Payments</div>
+                    </div>
+                </div>
+
+                <!-- Payments Table Card -->
+                <div class="card">
+                    <div class="filter-bar" style="flex-wrap: wrap; gap: 0.75rem;">
+                        <div class="filter-tabs" id="paymentTypeTabs">
+                            <button type="button" class="filter-tab active" data-ptype="">All Transactions</button>
+                            <button type="button" class="filter-tab" data-ptype="CustomerReceipt">Customer Receipts</button>
+                            <button type="button" class="filter-tab" data-ptype="SupplierPayment">Supplier Payments</button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                            <input type="date" id="paymentFilterDate" class="form-input" style="width: auto; height: 34px; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnPaymentFilterToday">Today</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnPaymentFilterAll">All</button>
+                        </div>
+                        <div class="search-input-wrap">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="paymentSearchInput" class="search-input" placeholder="Search Payment #, Party, Reference, Notes...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment #</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Commercial Party</th>
+                                    <th>Payment Method</th>
+                                    <th>Reference #</th>
+                                    <th>Notes/th>
+                                    <th style="text-align: right;">Amount (PKR)</th>
+                                    <th style="text-align: right;">Remaining Bal</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentsTableBody">
+                                <tr><td colspan="10" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading payment transactions...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: UNIFIED GENERAL LEDGER -->
+            <!-- VIEW: GATE PASS MANAGEMENT -->
+            <section id="gatePassView" class="view-section">
+                <div class="view-header">
+                    <div class="view-title">
+                        <h2>Gate Pass</h2>
+                        <p>Inward & Outward transport passes with official Tri Agro Farms signatures</p>
+                    </div>
+                    <div class="header-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            Print Register
+                        </button>
+                        <button type="button" class="btn btn-sm" id="btnOpenGpStockIn" style="background: #059669; border-color: #059669; color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>Stock IN (Receiving)</span>
+                        </button>
+                        <button type="button" class="btn btn-sm" id="btnOpenGpStockOut" style="background: #2563EB; border-color: #2563EB; color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 14 12 9 7 14"></polyline><line x1="12" y1="9" x2="12" y2="21"></line></svg>
+                            <span>Stock OUT (Dispatch)</span>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btnOpenGatePassModal" style="background: #0F172A; border-color: #0F172A; color: #fff; display: inline-flex; align-items: center; gap: 5px;">
+                            + Issue Gate Pass
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gate Pass KPIs -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 1.25rem;">
+                    <div class="kpi-card" style="border-left: 5px solid #059669;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #059669;">Total Gate Passes</span>
+                            <div class="kpi-icon" style="background: #D1FAE5; color: #059669;">ðŸ“œ</div>
+                        </div>
+                        <div class="kpi-value" id="kpiGpTotalCount" style="color: #059669; font-size: 1.8rem; font-weight: 800;">0</div>
+                        <div class="kpi-subtitle">All Recorded Logistics Passes</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid #2563EB;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #2563EB;">Outward Dispatches</span>
+                            <div class="kpi-icon" style="background: #EFF6FF; color: #2563EB;">ðŸš›</div>
+                        </div>
+                        <div class="kpi-value" id="kpiGpOutwardCount" style="color: #2563EB; font-size: 1.8rem; font-weight: 800;">0</div>
+                        <div class="kpi-subtitle">Collection of flowers Sent Out</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 5px solid #D97706;">
+                        <div class="kpi-header">
+                            <span class="kpi-title" style="font-weight: 700; color: #D97706;">Inward Deliveries</span>
+                            <div class="kpi-icon" style="background: #FFFBEB; color: #D97706;">ðŸ“¦</div>
+                        </div>
+                        <div class="kpi-value" id="kpiGpInwardCount" style="color: #D97706; font-size: 1.8rem; font-weight: 800;">0</div>
+                        <div class="kpi-subtitle">Fertilizers, Medicine & Supplies In</div>
+                    </div>
+                </div>
+
+                <!-- Gate Pass Table Card -->
+                <div class="card">
+                    <div class="filter-bar" style="flex-wrap: wrap; gap: 0.75rem;">
+                        <div class="filter-tabs" id="gpTypeTabs">
+                            <button type="button" class="filter-tab active" data-gptype="">All Passes</button>
+                            <button type="button" class="filter-tab" data-gptype="Outward">Outward (Dispatch)</button>
+                            <button type="button" class="filter-tab" data-gptype="Inward">Inward (Receiving)</button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                            <input type="date" id="gpFilterDate" class="form-input" style="width: auto; height: 34px; padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnGpFilterToday">Today</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnGpFilterAll">All</button>
+                        </div>
+                        <div class="search-input-wrap">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="gpSearchInput" class="search-input" placeholder="Search Pass #, Party, Vehicle, Driver, Bilty...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Pass #</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Party</th>
+                                    <th>Vehicle #</th>
+                                    <th>Driver Info</th>
+                                    <th>Items y</th>
+                                    <th>Ref #</th>
+                                    <th style="text-align: center;">Official Slip</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gpTableBody">
+                                <tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading Gate Passes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- MODAL 1: NEW DOUBLE-ENTRY VOUCHER -->
+
+    <div class="modal-overlay" id="modalVoucher" hidden>
+
+        <div class="modal-card modal-lg">
+
+            <div class="modal-header">
+
+                <h3>Record Double-Entry Voucher</h3>
+
+                <button type="button" class="modal-close-btn" data-close-modal="modalVoucher">&times;</button>
+
+            </div>
+
+            <form id="voucherCreateForm">
+
+                <div class="modal-body">
+
+                    <div class="form-grid-3" style="display: grid; grid-template-columns: 1.15fr 1.3fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Auto Voucher #</label>
+                            <input type="text" id="vFormVoucherNumber" class="form-input" readonly style="background: #F8FAFC; font-weight: 700; color: #064E3B; border: 1.5px solid #A7F3D0;" placeholder="TA-2026-NOV-000001">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Voucher Type</label>
+                            <select id="vFormType" class="form-select" required>
+                                <option value="Payment">Cash Payment (CP) - Vendor/Expense disbursement</option>
+                                <option value="Receipt">Cash Receipt (CR) - Customer collection</option>
+                                <option value="Bank Payment">Bank Payment (BP) - Bank transfer or cheque</option>
+                                <option value="Bank Receipt">Bank Receipt (BR) - Bank deposit or inward RTGS</option>
+                                <option value="Journal" selected>Journal Voucher (JV) - Adjustment & non-cash</option>
+                                <option value="Sales">Sales Voucher (SV) - Commercial invoicing</option>
+                                <option value="Purchase">Purchase Voucher (PV) - Raw materials & inventory</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Transaction Date</label>
+                            <input type="date" id="vFormDate" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Reference / Gate Pass #</label>
+                            <input type="text" id="vFormRef" class="form-input" placeholder="e.g. TA-ref-000001">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">General Description </label>
+
+                            <input type="text" id="vFormNarration" class="form-input" placeholder="e.g. Monthly corporate office rental payment">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 0.5rem;">
+
+                        <label class="form-label" style="margin-bottom: 0;">Double-Entry Line Items (Debit & Credit)</label>
+
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnAddVoucherRow">+ Add Line Entry</button>
+                            <button type="button" class="btn btn-sm" onclick="openAccountModal(null)" title="Add a custom General Ledger Account" style="background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; font-weight: 600; cursor: pointer;">+ New Account</button>
+                            <button type="button" class="btn btn-sm" onclick="openPartyModal(null)" title="Add a new Customer, Vendor or Party" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; font-weight: 600; cursor: pointer;">+ New Party</button>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+
+                        <table class="voucher-lines-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th style="width: 32%;">General Ledger Account</th>
+
+                                    <th style="width: 25%;">Party (Optional)</th>
+
+                                    <th style="width: 14%;">Type</th>
+
+                                    <th style="width: 16%; text-align: right;">Amount (PKR)</th>
+
+                                    <th style="width: 8%; text-align: center;">Del</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="voucherLinesBody">
+
+                                <!-- Populated dynamically -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+                    <!-- Live Balance Indicator Bar -->
+
+                    <div class="voucher-balance-bar">
+
+                        <div class="balance-item">Total Debits: <span id="vTotalDebit" style="color: #059669;">PKR 0.00</span></div>
+
+                        <div class="balance-item">Total Credits: <span id="vTotalCredit" style="color: #2563EB;">PKR 0.00</span></div>
+
+                        <div id="vBalanceBadge" class="diff-badge balanced" style="background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; font-weight: 700;">âœ“ Ready</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalVoucher">Cancel</button>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmitVoucher">Post Voucher to Ledger</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL 2: VOUCHER VIEW & PRINT SLIP -->
+
+    <div class="modal-overlay" id="modalVoucherSlip" hidden>
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <h3>Transaction Voucher Slip</h3>
+
+                <button type="button" class="modal-close-btn" data-close-modal="modalVoucherSlip">&times;</button>
+
+            </div>
+
+            <div class="modal-body" id="printableVoucherContent">
+
+                <div class="print-slip-container">
+
+                    <div class="print-slip-header" style="text-align: center; border-bottom: 2px solid #059669; padding-bottom: 1.1rem; margin-bottom: 1.25rem;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+                            <img src="images/logo.jpg" alt="Tri Agro Farms Logo" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2.5px solid #059669; box-shadow: 0 3px 8px rgba(0,0,0,0.12); flex-shrink: 0;">
+                            <div style="text-align: left;">
+                                <h2 class="print-company-title" id="slipCompanyName" style="margin: 0; font-size: 1.65rem; font-weight: 800; color: #064e3b; letter-spacing: -0.02em; line-height: 1.1;">Tri Agro Farms</h2>
+                                <p id="slipCompanyAddress" style="margin: 3px 0 0 0; font-size: 0.85rem; color: #475569; font-weight: 500;">Sheikhupura &bull; Phone: 0320944803</p>
+                                <span style="display: inline-block; background: #ecfdf5; color: #047857; font-size: 0.72rem; font-weight: 700; padding: 2px 9px; border-radius: 9999px; border: 1px solid #a7f3d0; margin-top: 4px; letter-spacing: 0.03em;">OFFICIAL TRANSACTION VOUCHER</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 0.6rem; border-top: 1px dashed #cbd5e1; padding-top: 0.5rem;">
+                            <h3 id="slipVoucherTypeTitle" style="margin: 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; font-weight: 800;">Journal Voucher</h3>
+                        </div>
+                    </div>
+
+
+
+                    <div class="print-slip-meta">
+
+                        <div>
+
+                            <div><strong>Voucher #:</strong> <span id="slipVoucherNumber">-</span></div>
+
+                            <div><strong>Reference:</strong> <span id="slipReference">-</span></div>
+
+                        </div>
+
+                        <div style="text-align: right;">
+
+                            <div><strong>Date:</strong> <span id="slipDate">-</span></div>
+
+                            <div><strong>Status:</strong> Synced &bull; Posted</div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <p style="margin-bottom: 0.75rem; font-size: 0.85rem;"><strong>General Narration:</strong> <span id="slipNarration">-</span></p>
+
+
+
+                    <table class="data-table" style="margin-bottom: 1.5rem;">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Account Code & Title</th>
+
+                                <th>Party Name</th>
+
+                                <th style="text-align: right;">Debit (PKR)</th>
+
+                                <th style="text-align: right;">Credit (PKR)</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="slipEntriesTableBody"></tbody>
+
+                        <tfoot id="slipEntriesTableFoot" style="font-weight: 800; background: #F8FAFC;"></tfoot>
+
+                    </table>
+
+
+
+                    <div class="print-signature-row">
+
+                        <div class="sig-box">Prepared By<br><small id="slipPreparedBy">Muhammad Saad Javed</small></div>
+
+                        <div class="sig-box">Verified / Approved By</div>
+
+                        <div class="sig-box">Receiver Signature</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" id="btnDeleteSlipVoucher" style="background: #EF4444; border-color: #DC2626; color: #fff; margin-right: auto; padding: 6px 12px; font-weight: 600; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Delete Voucher
+                </button>
+                <button type="button" class="btn btn-secondary" data-close-modal="modalVoucherSlip">Close</button>
+
+                <button type="button" class="btn btn-primary" id="btnPrintSlipBtn" onclick="printVoucherSlipNow()">
+
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+
+                    Print / Save PDF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL 3: ADD / EDIT COMMERCIAL PARTY -->
+
+    <div class="modal-overlay" id="modalParty" hidden>
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <h3 id="partyModalTitle">Add Commercial Party</h3>
+
+                <button type="button" class="modal-close-btn" data-close-modal="modalParty">&times;</button>
+
+            </div>
+
+            <form id="partyForm">
+
+                <input type="hidden" id="partyFormId" value="">
+
+                <div class="modal-body">
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Party Name </label>
+
+                            <input type="text" id="partyFormName" class="form-input" required placeholder="e.g. Indus Fibre Industries">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">Party Type</label>
+
+                            <select id="partyFormType" class="form-select" required>
+
+                                <option value="Customer">Customer (Trade Debtor - Receivables)</option>
+
+                                <option value="Vendor">Vendor (Trade Creditor - Payables)</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Contact Person</label>
+
+                            <input type="text" id="partyFormContact" class="form-input" placeholder="e.g. Nouman">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">Phone no</label>
+
+                            <input type="text" id="partyFormPhone" class="form-input" placeholder="+92 300 8219481">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Email Address</label>
+
+                            <input type="email" id="partyFormEmail" class="form-input" placeholder="accounts@industry.pk">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">City</label>
+
+                            <input type="text" id="partyFormCity" class="form-input" placeholder="Karachi, Lahore, etc.">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label class="form-label">Street Address</label>
+
+                        <input type="text" id="partyFormAddress" class="form-input" placeholder="Plot 42, S.I.T.E Industrial Area">
+
+                    </div>
+
+
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Credit Limit (PKR)</label>
+
+                            <input type="number" step="1000" id="partyFormCreditLimit" class="form-input" placeholder="0">
+
+                        </div>
+
+                        <div class="form-group" id="partyOpeningBalGroup">
+
+                            <label class="form-label">Opening Balance (PKR)</label>
+
+                            <input type="number" step="0.01" id="partyFormBalance" class="form-input" placeholder="0">
+
+                        </div>
+
+                    </div>
+
+                                    <div id="partyCustomFieldsContainer" style="display: none; border-top: 1px dashed var(--border-subtle); padding-top: 0.75rem; margin-top: 0.75rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.92rem; color: #0F172A; font-weight: 700;">Customer Custom Fields</h4>
+                        <div id="partyCustomFieldsGrid" class="form-grid-2"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalParty">Cancel</button>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmitParty">Save Party</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL 4: ADD / EDIT ACCOUNT -->
+
+    <div class="modal-overlay" id="modalAccount" hidden>
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <h3 id="accountModalTitle">Add General Ledger Account</h3>
+
+                <button type="button" class="modal-close-btn" data-close-modal="modalAccount">&times;</button>
+
+            </div>
+
+            <form id="accountForm">
+
+                <input type="hidden" id="accountFormId" value="">
+
+                <div class="modal-body">
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Account Code</label>
+
+                            <input type="text" id="accountFormCode" class="form-input" required placeholder="e.g. 1040">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">Account Name / Title</label>
+
+                            <input type="text" id="accountFormName" class="form-input" required placeholder="e.g. Standard Chartered Bank A/C">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Account Classification Type</label>
+
+                            <select id="accountFormType" class="form-select" required>
+
+                                <option value="Asset">Asset (Debit Normal)</option>
+
+                                <option value="Liability">Liability (Credit Normal)</option>
+
+                                <option value="Equity">Equity (Credit Normal)</option>
+
+                                <option value="Revenue">Revenue (Credit Normal)</option>
+
+                                <option value="Expense">Expense (Debit Normal)</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group" id="accountOpeningBalGroup">
+
+                            <label class="form-label">Opening Balance (PKR)</label>
+
+                            <input type="number" step="0.01" id="accountFormBalance" class="form-input" placeholder="0">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label class="form-label">Description / Remarks</label>
+
+                        <textarea id="accountFormDesc" class="form-textarea" rows="2" placeholder="Account purpose and bank details"></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalAccount">Cancel</button>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmitAccount">Save Account</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL: ADD DAILY & DATE-WISE EXPENSE -->
+
+    <div class="modal-overlay" id="modalExpense" hidden>
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h3 style="display: flex; align-items: center; gap: 8px;">
+
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+
+                        Record Daily & Date-wise Expense
+
+                    </h3>
+
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Fast expense recording with automated double-entry ledger posting</p>
+
+                </div>
+
+                <button type="button" class="modal-close-btn" data-close-modal="modalExpense">&times;</button>
+
+            </div>
+
+            <form id="formAddExpense">
+
+                <div class="modal-body">
+
+                    <div class="form-grid-2">
+
+                        <div class="form-group">
+
+                            <label class="form-label">Expense Date *</label>
+
+                            <input type="date" id="expFormDate" class="form-input" required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">Amount (PKR) *</label>
+
+                            <input type="number" step="0.01" min="0.01" id="expFormAmount" class="form-input" placeholder="0.00" required style="font-weight: 700; color: #DC2626; font-size: 1.1rem;">
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="form-group">
+
+                        <label class="form-label">Description / Narration *</label>
+
+                        <textarea id="expFormNarration" class="form-textarea" rows="2" placeholder="e.g. Paid office tea snacks, monthly internet bill payment" required></textarea>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label class="form-label">Reference / Gate Pass # (Auto-assigned)</label>
+
+                        <input type="text" id="expFormReference" class="form-input" placeholder="e.g. TA-ref-000001">
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalExpense">Cancel</button>
+
+                    <button type="submit" class="btn btn-danger" id="btnSubmitExpense" style="background: #DC2626; border-color: #DC2626; color: #fff;">
+
+                        Save Expense
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- MODAL: ADD INCOME TRANSACTION -->
+    <div class="modal-overlay" id="modalIncome" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                        Record Income / Revenue
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Post farm produce, sales, or receivable collection to double-entry ledger</p>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modalIncome">&times;</button>
+            </div>
+            <form id="formAddIncome">
+                <div class="modal-body">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Transaction Date *</label>
+                            <input type="date" id="incFormDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount (PKR) *</label>
+                            <input type="number" step="0.01" min="0.01" id="incFormAmount" class="form-input" placeholder="0.00" required style="font-weight: 700; color: #059669; font-size: 1.1rem;">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Income Category *</label>
+                            <input type="text" id="incFormCategory" class="form-input" placeholder="e.g. Farm Produce, Crop Sales, Services" list="incCategorySuggestions" required>
+                            <datalist id="incCategorySuggestions">
+                                <option value="Farm Produce Sales">
+                                <option value="Crop Services">
+                                <option value="Livestock Revenue">
+                                <option value="General Income">
+                                <option value="Consulting & Advisory">
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method *</label>
+                            <select id="incFormMethod" class="form-select" required>
+                                <option value="Cash in Hand">Cash in Hand</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Card">Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Customer / Commercial Party</label>
+                        <select id="incFormCustomer" class="form-select">
+                            <option value="">-- Walk-in / Cash (No Registered Customer) --</option>
+                        </select>
+                        <small style="color: var(--text-muted); font-size: 0.78rem;">Select registered customer if selling on account or collecting receivables.</small>
+                    </div>
+
+                    <div class="form-group" style="padding: 0.75rem 0.95rem; background: #F0FDF4; border-radius: 8px; border: 1.5px solid #BBF7D0;">
+                        <label class="form-label" style="font-weight: 700; color: #166534; margin-bottom: 6px;">Accounting Classification *</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.86rem; color: #14532D; cursor: pointer;">
+                                <input type="radio" name="incFormTypeRadio" id="incRadioRevenue" value="revenue" checked style="margin-top: 3px; accent-color: #059669;">
+                                <div>
+                                    <strong>Direct Sales & Farm Revenue</strong>
+                                    <div style="font-size: 0.76rem; color: #15803D;">Increases Total Direct Income & posts genuine new revenue into Ledger</div>
+                                </div>
+                            </label>
+                            <label id="lblIncRadioReceipt" style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.86rem; color: #1E40AF; cursor: pointer; opacity: 0.5;">
+                                <input type="radio" name="incFormTypeRadio" id="incRadioReceipt" value="receipt" disabled style="margin-top: 3px; accent-color: #2563EB;">
+                                <div>
+                                    <strong>Customer Debt Collection (Receipt)</strong>
+                                    <div id="incReceiptHelpText" style="font-size: 0.76rem; color: #64748B;">Requires selecting a customer above. Settles customer receivable without duplicating revenue.</div>
+                                </div>
+                            </label>
+                            <!-- Compatibility fallback for any cached script accessing incFormIsReceipt -->
+                            <input type="checkbox" id="incFormIsReceipt" style="display: none;" tabindex="-1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description / Narration *</label>
+                        <textarea id="incFormDescription" class="form-textarea" rows="2" placeholder="e.g. Wheat grain harvest sales payment received" required></textarea>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Reference / Slip #</label>
+                            <input type="text" id="incFormReference" class="form-input" placeholder="e.g. TA-ref-000001 (auto if empty)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Internal Notes</label>
+                            <input type="text" id="incFormNotes" class="form-input" placeholder="Additional remarks...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalIncome">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="btnSubmitIncome" style="background: #059669; border-color: #059669; color: #fff;">Save Income</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Income Modal -->
+    <div class="modal-overlay" id="modalEditIncome" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        Edit Income Transaction
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="editIncHeaderSub">Update income details and adjust double-entry postings</p>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modalEditIncome">&times;</button>
+            </div>
+            <form id="formEditIncome">
+                <input type="hidden" id="editIncId">
+                <div class="modal-body">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Transaction Date *</label>
+                            <input type="date" id="editIncDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount (PKR) *</label>
+                            <input type="number" step="0.01" min="0.01" id="editIncAmount" class="form-input" placeholder="0.00" required style="font-weight: 700; color: #059669; font-size: 1.1rem;">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Income Category *</label>
+                            <input type="text" id="editIncCategory" class="form-input" list="incCategorySuggestions" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method *</label>
+                            <select id="editIncMethod" class="form-select" required>
+                                <option value="Cash in Hand">Cash in Hand</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Card">Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Customer / Commercial Party</label>
+                        <select id="editIncCustomer" class="form-select">
+                            <option value="">-- Walk-in / Cash (No Registered Customer) --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="padding: 0.75rem 0.95rem; background: #F0FDF4; border-radius: 8px; border: 1.5px solid #BBF7D0;">
+                        <label class="form-label" style="font-weight: 700; color: #166534; margin-bottom: 6px;">Accounting Classification *</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.86rem; color: #14532D; cursor: pointer;">
+                                <input type="radio" name="editIncTypeRadio" id="editIncRadioRevenue" value="revenue" checked style="margin-top: 3px; accent-color: #059669;">
+                                <div>
+                                    <strong>Direct Sales & Farm Revenue</strong>
+                                    <div style="font-size: 0.76rem; color: #15803D;">Increases Total Direct Income</div>
+                                </div>
+                            </label>
+                            <label id="lblEditIncRadioReceipt" style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.86rem; color: #1E40AF; cursor: pointer;">
+                                <input type="radio" name="editIncTypeRadio" id="editIncRadioReceipt" value="receipt" style="margin-top: 3px; accent-color: #2563EB;">
+                                <div>
+                                    <strong>Customer Debt Collection (Receipt)</strong>
+                                    <div style="font-size: 0.76rem; color: #64748B;">Requires selecting a customer above</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description / Narration *</label>
+                        <textarea id="editIncDescription" class="form-textarea" rows="2" required></textarea>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Reference / Slip #</label>
+                            <input type="text" id="editIncReference" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Internal Notes</label>
+                            <input type="text" id="editIncNotes" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalEditIncome">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="btnSubmitEditIncome" style="background: #059669; border-color: #059669; color: #fff;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD PAYMENT / RECEIPT ALLOCATION -->
+    <div class="modal-overlay" id="modalPayment" hidden>
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                        Record Payment / Customer Receipt
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Allocate payments against customer receivables or supplier payables</p>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modalPayment">&times;</button>
+            </div>
+            <form id="formAddPayment">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Transaction Mode *</label>
+                        <select id="payFormType" class="form-select" required style="font-weight: 700;">
+                            <option value="CustomerReceipt">Customer Receipt (Collecting Receivable Inflow)</option>
+                            <option value="SupplierPayment">Supplier Payment (Paying Outstanding Payable)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" id="payFormPartyLabel">Commercial Party *</label>
+                        <select id="payFormParty" class="form-select" required>
+                            <option value="">-- Select Party --</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Balance Calculation Strip -->
+                    <div id="payPartyBalanceStrip" style="display: none; padding: 0.75rem 1rem; background: #EFF6FF; border-radius: 6px; border: 1px solid #BFDBFE; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span style="color: var(--text-secondary);">Current Outstanding Balance:</span>
+                            <strong id="payCurrentBalanceText" style="color: #1E3A8A;">PKR 0.00</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                            <span style="color: var(--text-secondary);">Balance After This Payment:</span>
+                            <strong id="payRemainingBalanceText" style="color: #059669;">PKR 0.00</strong>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Payment Date *</label>
+                            <input type="date" id="payFormDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Amount (PKR) *</label>
+                            <input type="number" step="0.01" min="0.01" id="payFormAmount" class="form-input" placeholder="0.00" required style="font-weight: 700; color: #2563EB; font-size: 1.1rem;">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Payment Method *</label>
+                            <select id="payFormMethod" class="form-select" required>
+                                <option value="Cash in Hand">Cash in Hand</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Card">Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Reference / Cheque #</label>
+                            <input type="text" id="payFormReference" class="form-input" placeholder="e.g. CHQ-98421">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notes & Allocation Details</label>
+                        <textarea id="payFormNotes" class="form-textarea" rows="2" placeholder="e.g. Cleared bill #104 against tomato supply delivery"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalPayment">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitPayment" style="background: #2563EB; border-color: #2563EB; color: #fff;">Save Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- MODAL: CREATE NEW GATE PASS (COMPACT & SCROLLABLE) -->
+    <div class="modal-overlay" id="modalGatePass" hidden>
+        <div class="modal-card" style="max-width: 740px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div class="modal-header" style="padding: 0.75rem 1.25rem; flex-shrink: 0; background: #F8FAFC; border-bottom: 1.5px solid #E2E8F0;">
+                <div>
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin: 0; color: #064E3B; font-size: 1.15rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.5L19 7.5V19a2 2 0 0 1-2 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        Tri Agro Farms &bull; Farm Gate Pass
+                    </h3>
+                    <p style="font-size: 0.76rem; color: var(--text-muted); margin: 2px 0 0 0;">Official Commercial Flower Collection, Dispatch &amp; Billing Register</p>
+                </div>
+                <button type="button" class="modal-close-btn" data-close-modal="modalGatePass">&times;</button>
+            </div>
+            
+            <form id="formAddGatePass" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; margin: 0;">
+                <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 0.85rem 1.25rem;">
+                    <!-- Stock Action Switch -->
+                    <div style="margin-bottom: 0.65rem;">
+                        <label class="form-label" style="font-weight: 700; margin-bottom: 0.25rem; font-size: 0.82rem; display: block; color: #0F172A;">Select Stock Action *</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button type="button" id="btnGpStockOut" class="btn" style="padding: 0.45rem 0.75rem; font-weight: 700; font-size: 0.85rem; border-radius: 6px; border: 2px solid #2563EB; background: #2563EB; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 14 12 9 7 14"></polyline><line x1="12" y1="9" x2="12" y2="21"></line></svg>
+                                <span>Stock OUT (Flower Dispatch)</span>
+                            </button>
+                            <button type="button" id="btnGpStockIn" class="btn" style="padding: 0.45rem 0.75rem; font-weight: 700; font-size: 0.85rem; border-radius: 6px; border: 1.5px solid #CBD5E1; background: #F8FAFC; color: #475569; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                <span>Stock IN (Flower Receiving)</span>
+                            </button>
+                            <input type="hidden" id="gpFormType" value="Outward">
+                        </div>
+                    </div>
+
+                    <!-- Row 1: Gate Pass #, Reference #, Date & Time -->
+                    <div style="display: grid; grid-template-columns: 1.15fr 1.15fr 1fr 1fr; gap: 8px; margin-bottom: 0.65rem;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Gate Pass # (Auto)</label>
+                            <input type="text" id="gpFormPassNumber" class="form-input" readonly style="background: #F8FAFC; font-family: monospace; font-size: 0.85rem; font-weight: 800; color: #059669; border: 1.5px solid #A7F3D0; padding: 0.35rem 0.6rem;" placeholder="TA-GP-2026-NOV-000001">
+                            <div id="gpAutoVoucherNum" style="display: none;"></div>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Reference # (Auto)</label>
+                            <input type="text" id="gpFormRef" class="form-input" style="background: #F8FAFC; font-family: monospace; font-size: 0.85rem; font-weight: 800; color: #064E3B; border: 1.5px solid #CBD5E1; padding: 0.35rem 0.6rem;" placeholder="TA-ref-000001">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Date *</label>
+                            <input type="date" id="gpFormDate" class="form-input" required style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Dispatch Time *</label>
+                            <input type="time" id="gpFormTime" class="form-input" required style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Receiver / Consignee & Phone -->
+                    <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; margin-bottom: 0.65rem;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 700; color: #064E3B; font-size: 0.8rem; margin-bottom: 2px;">Order Received By (Customer / Florist Boutique) *</label>
+                            <input type="text" id="gpFormParty" class="form-input" placeholder="e.g. Blossom Flower Boutique / Royal Florist" required style="padding: 0.38rem 0.6rem; font-weight: 600; font-size: 0.85rem;">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 700; color: #064E3B; font-size: 0.8rem; margin-bottom: 2px;">Receiver Contact / Phone # *</label>
+                            <input type="text" id="gpFormDriverPhone" class="form-input" placeholder="e.g. 0320-9448030" required style="padding: 0.38rem 0.6rem; font-weight: 600; font-size: 0.85rem;">
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Vehicle & Driver -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.65rem;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Delivery Vehicle / Courier #</label>
+                            <input type="text" id="gpFormVehicle" class="form-input" placeholder="e.g. LES-19-4820 / Delivery Van" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Driver Name</label>
+                            <input type="text" id="gpFormDriverName" class="form-input" placeholder="e.g. Muhammad Aslam (Driver)" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Financial & Billing Section (Amount & Debit/Credit) -->
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; margin-bottom: 0.65rem; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 6px; padding: 0.6rem 0.75rem;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 700; color: #064E3B; font-size: 0.8rem; margin-bottom: 2px;">Total Bill Amount (PKR) *</label>
+                            <input type="number" step="0.01" min="0" id="gpFormTotalAmount" class="form-input" placeholder="e.g. 75000" style="padding: 0.38rem 0.6rem; font-size: 0.95rem; font-weight: 800; color: #064E3B; background: #FFFFFF;">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" style="font-weight: 700; color: #064E3B; font-size: 0.8rem; margin-bottom: 2px;">Ledger Settlement *</label>
+                            <select id="gpFormPaymentType" class="form-select" style="padding: 0.38rem 0.6rem; font-size: 0.85rem; font-weight: 700; background: #FFFFFF;">
+                                <option value="Debit (Customer Ledger / Receivable)">Debit (Customer Ledger / Receivable)</option>
+                                <option value="Credit (Advance Paid / Settlement)">Credit (Advance Paid / Settlement)</option>
+                                <option value="Cash on Delivery (Cash)">Cash on Delivery (Cash)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Dispatch Remarks -->
+                    <div class="form-group" style="margin-bottom: 0.65rem;">
+                        <label class="form-label" style="font-weight: 600; font-size: 0.8rem; margin-bottom: 2px;">Dispatch Description &amp; Security Remarks</label>
+                        <input type="text" id="gpFormRemarks" class="form-input" placeholder="e.g. Fresh cut flowers dispatched in cooled temperature" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">
+                    </div>
+
+                    <!-- Row 6: Products & Pricing Table -->
+                    <div style="margin-bottom: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <label class="form-label" style="margin: 0; font-weight: 700; font-size: 0.85rem; color: #064E3B;">
+                                Flower Products, Quantities &amp; Rates *
+                            </label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnGpAddItem" style="padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700; background: #ECFDF5; color: #065F46; border: 1.5px solid #059669;">+ Add Flower Line</button>
+                        </div>
+                        <div style="max-height: 180px; overflow-y: auto; border: 1px solid #CBD5E1; border-radius: 6px;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem;" class="data-table">
+                                <thead>
+                                    <tr style="background: #F1F5F9; position: sticky; top: 0; z-index: 1;">
+                                        <th style="padding: 6px 8px; text-align: left;">Flower Variety / Description *</th>
+                                        <th style="width: 85px; padding: 6px 8px; text-align: center;">Qty *</th>
+                                        <th style="width: 95px; padding: 6px 8px; text-align: center;">Unit</th>
+                                        <th style="width: 95px; padding: 6px 8px; text-align: right;">Rate (PKR)</th>
+                                        <th style="width: 95px; padding: 6px 8px; text-align: right;">Total (PKR)</th>
+                                        <th style="width: 32px; text-align: center;">&times;</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gpItemsTableBody">
+                                    <tr>
+                                        <td><input type="text" class="form-input gp-item-name" placeholder="e.g. Red Rose Stems / Fresh Gladiolus" required style="padding: 0.35rem 0.5rem; font-size: 0.82rem;"></td>
+                                        <td><input type="number" step="0.1" min="0.1" class="form-input gp-item-qty" placeholder="50" required style="padding: 0.35rem 0.5rem; font-size: 0.82rem; text-align: center; font-weight: 700;" oninput="window.updateGpRowTotal(this)"></td>
+                                        <td>
+                                            <select class="form-select gp-item-unit" style="padding: 0.35rem 0.45rem; font-size: 0.82rem; font-weight: 600;">
+                                                <option value="Bunches">Bunches</option>
+                                                <option value="Stems">Stems</option>
+                                                <option value="Boxes">Boxes</option>
+                                                <option value="Crates">Crates</option>
+                                                <option value="Buckets">Buckets</option>
+                                                <option value="Kg">Kg</option>
+                                                <option value="Pcs">Pcs</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="number" step="0.01" min="0" class="form-input gp-item-rate" placeholder="500" style="padding: 0.35rem 0.5rem; font-size: 0.82rem; text-align: right;" oninput="window.updateGpRowTotal(this)"></td>
+                                        <td><input type="number" step="0.01" class="form-input gp-item-total" placeholder="25000" style="padding: 0.35rem 0.5rem; font-size: 0.82rem; text-align: right; font-weight: 700; background: #F8FAFC;" readonly></td>
+                                        <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); window.calculateGpGrandTotal();" style="padding: 0.15rem 0.35rem; font-size: 0.72rem;">&times;</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Hidden defaults -->
+                    <input type="hidden" id="gpFormBilty" value="">
+                    <input type="hidden" id="gpFormRef" value="">
+                    <input type="hidden" id="gpFormPreparedBy" value="Tri Agro Farms Dispatch">
+                    <input type="hidden" id="gpFormGateIncharge" value="Security Gate">
+                    <input type="hidden" id="gpFormAuthorizedBy" value="Farm Authority">
+                </div>
+
+                <div class="modal-footer" style="padding: 0.65rem 1.25rem; flex-shrink: 0; background: #F8FAFC; border-top: 1.5px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 0.65rem;">
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalGatePass" style="padding: 0.45rem 1rem; font-size: 0.85rem;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitGatePass" style="background: #059669; border-color: #059669; color: #fff; font-weight: 700; padding: 0.45rem 1.25rem; font-size: 0.88rem;">
+                        âœ“ Generate Farm Gate Pass
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: OFFICIAL PRINTABLE GATE PASS SLIP (TRI AGRO FARMS - EXECUTIVE DESIGN MATCHING VOUCHER) -->
+    <div class="modal-overlay" id="modalGatePassSlip" hidden>
+        <div class="modal-card" style="max-width: 820px;">
+            <div class="modal-header">
+                <h3>Official Gate Pass Slip</h3>
+                <button type="button" class="modal-close-btn" data-close-modal="modalGatePassSlip">&times;</button>
+            </div>
+
+            <div class="modal-body" id="printableGatePassContent">
+                <div class="print-slip-container">
+                    <div class="print-slip-header" style="text-align: center; border-bottom: 2px solid #059669; padding-bottom: 1.1rem; margin-bottom: 1.25rem;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+                            <img src="images/logo.jpg" alt="Tri Agro Farms Logo" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2.5px solid #059669; box-shadow: 0 3px 8px rgba(0,0,0,0.12); flex-shrink: 0;">
+                            <div style="text-align: left;">
+                                <h2 class="print-company-title" id="gpSlipCompanyName" style="margin: 0; font-size: 1.65rem; font-weight: 800; color: #064e3b; letter-spacing: -0.02em; line-height: 1.1;">Tri Agro Farms</h2>
+                                <p id="gpSlipCompanyAddress" style="margin: 3px 0 0 0; font-size: 0.85rem; color: #475569; font-weight: 500;">Sheikhupura &bull; Phone: 0320944803</p>
+                                <span style="display: inline-block; background: #ecfdf5; color: #047857; font-size: 0.72rem; font-weight: 700; padding: 2px 9px; border-radius: 9999px; border: 1px solid #a7f3d0; margin-top: 4px; letter-spacing: 0.03em;">OFFICIAL DISPATCH &bull; GATE PASS CHALLAN</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 0.6rem; border-top: 1px dashed #cbd5e1; padding-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <h3 id="gpSlipTypeBadge" style="margin: 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; font-weight: 800;">Stock Out Gate Pass</h3>
+                            <div style="font-size: 0.92rem; font-weight: 800; color: #064E3B;">
+                                PASS #: <span id="gpSlipNumber" style="font-family: monospace;">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="print-slip-meta">
+                        <div>
+                            <div><strong>Gate Pass #:</strong> <span id="gpSlipNumber" style="font-family: monospace;">-</span></div>
+                            <div><strong>Reference:</strong> <span id="gpSlipReference" style="font-family: monospace;">-</span></div>
+                            <div><strong>Customer / Consignee:</strong> <span id="gpSlipParty">-</span></div>
+                            <div><strong>Driver Phone:</strong> <span id="gpSlipReceiverPhone">-</span></div>
+                            <div><strong>Vehicle #:</strong> <span id="gpSlipVehicle">-</span></div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div><strong>Date:</strong> <span id="gpSlipDate">-</span></div>
+                            <div><strong>Dispatch Time:</strong> <span id="gpSlipTime">-</span></div>
+                            <div><strong>Settlement:</strong> <span id="gpSlipPaymentType">Debit (Customer Ledger)</span></div>
+                            <div><strong>Status:</strong> Synced &bull; Dispatched</div>
+                        </div>
+                    </div>
+
+                    <p style="margin-bottom: 0.75rem; font-size: 0.85rem;"><strong>Remarks / Instructions:</strong> <span id="gpSlipRemarks">-</span></p>
+
+                    <table class="data-table" style="margin-bottom: 1.5rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 45px; text-align: center;">Sr.</th>
+                                <th>Flower Description / Product Variety</th>
+                                <th style="text-align: right; width: 95px;">Quantity</th>
+                                <th style="text-align: center; width: 85px;">Unit</th>
+                                <th style="text-align: right; width: 110px;">Rate (PKR)</th>
+                                <th style="text-align: right; width: 130px;">Amount (PKR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gpSlipItemsBody"></tbody>
+                        <tfoot id="gpSlipItemsFoot" style="font-weight: 800; background: #F8FAFC;">
+                            <tr>
+                                <td colspan="2" style="text-align: right;">Total Amount (PKR):</td>
+                                <td id="gpSlipFootQty" style="text-align: right; color: #059669;">-</td>
+                                <td></td>
+                                <td></td>
+                                <td id="gpSlipFootAmount" style="text-align: right; color: #059669;">PKR 0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="print-signature-row">
+                        <div class="sig-box">Prepared / Dispatched By<br><small id="gpSlipPreparedBy">-</small></div>
+                        <div class="sig-box">Verified / Gate Clearance<br><small>Security Incharge</small></div>
+                        <div class="sig-box">Receiver Signature<br><small id="gpSlipReceiver">Customer / Driver</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-close-modal="modalGatePassSlip">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printGatePassSlipNow()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    Print / Save PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Core App Logic -->
+    <script src="dashboard.js?v=7.0"></script>
+
+    <!-- MODAL: ADD CUSTOM FIELD FOR CUSTOMER FORM -->
+    <div class="modal-overlay" id="modalAddCustomField" hidden>
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Add Customer Form Custom Field</h3>
+                <button type="button" class="modal-close-btn" data-close-modal="modalAddCustomField">&times;</button>
+            </div>
+            <form id="formAddCustomField">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Field Label (Visible Name)</label>
+                        <input type="text" id="cfInputLabel" class="form-input" required placeholder="e.g. NTN Number, CNIC, Delivery Route">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Internal Field Name (Key)</label>
+                        <input type="text" id="cfInputName" class="form-input" required placeholder="e.g. ntn_number, cnic">
+                        <small style="color: #64748B; font-size: 0.78rem;">Use lowercase letters, numbers, and underscores only.</small>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Field Type</label>
+                            <select id="cfInputType" class="form-select" onchange="toggleCfOptionsInput(this.value)">
+                                <option value="text">Text (Single line)</option>
+                                <option value="number">Number</option>
+                                <option value="date">Date</option>
+                                <option value="select">Dropdown (Options)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; padding-top: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <input type="checkbox" id="cfInputRequired" style="width: 18px; height: 18px;">
+                                Required Field
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="cfOptionsGroup" style="display: none;">
+                        <label class="form-label">Dropdown Options (Comma-separated)</label>
+                        <input type="text" id="cfInputOptions" class="form-input" placeholder="Option 1, Option 2, Option 3">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal="modalAddCustomField">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitCustomField">Create Custom Field</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+

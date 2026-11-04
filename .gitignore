@@ -1,0 +1,35 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Database WAL / SHM temporary locks
+*.db-wal
+*.db-shm
+
+# Diagnostics & Logs
+logs/
+*.log
+
+# Backups (keep baseline backup)
+backend/backups/*.db
+!backend/backups/ledger_backup_initial.db
+
+# IDE & Operating System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
